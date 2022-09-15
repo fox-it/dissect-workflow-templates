@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - run: git lfs pull
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
           cache: "pip"
@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - run: git lfs pull
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
           cache: "pip"
@@ -63,7 +63,7 @@ jobs:
         include:
           - python-version: "3.9"
             tox-env: "py39"
-          - python-version: "pypy-3.9"
+          - python-version: "pypy3.9"
             tox-env: "pypy39"
     steps:
       - if: ${{ inputs.run_tests == true }}
@@ -74,7 +74,7 @@ jobs:
       - if: ${{ inputs.run_tests == true }}
         run: git lfs pull
       - if: ${{ inputs.run_tests == true }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -109,7 +109,7 @@ jobs:
     if: ${{ contains(github.ref_name, 'main') || github.ref_name == 'master' || github.ref_type == 'tag' }}
     runs-on: [self-hosted, ubuntu-latest]
     steps:
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
       - uses: actions/download-artifact@v3
