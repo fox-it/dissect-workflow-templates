@@ -23,9 +23,11 @@ jobs:
           cache-dependency-path: "setup.py"
       - run: |
           sudo apt-get update
-          sudo apt-get -qq install build-essential python3.9-dev
+          sudo apt-get -qq install build-essential
       - run: pip install tox
-      - run: tox -e build
+      - env:
+          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
+        run: tox -e build
       - uses: actions/upload-artifact@v3
         with:
           name: packages
@@ -51,7 +53,9 @@ jobs:
           name: packages
           path: dist/
       - run: pip install tox
-      - run: tox -e lint
+      - env:
+          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
+        run: tox -e lint
 
   test:
     needs: build
@@ -61,8 +65,10 @@ jobs:
       matrix:
         include:
           - python-version: "3.9"
+            python-include: "python3.9"
             tox-env: "py39"
           - python-version: "pypy3.9"
+            python-include: "pypy3.9"
             tox-env: "pypy39"
     steps:
       - if: ${{ inputs.run_tests == true }}
@@ -86,9 +92,11 @@ jobs:
       - if: ${{ inputs.run_tests == true }}
         run: |
           sudo apt-get update
-          sudo apt-get -qq install build-essential python-dev python3.9-dev  tox
+          sudo apt-get -qq install build-essential tox
         run: pip install tox
       - if: ${{ inputs.run_tests == true }}
+        env:
+          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
         run: tox -e ${{ matrix.tox-env }}
       - if: ${{ inputs.run_tests == true }}
         uses: codecov/codecov-action@v2
