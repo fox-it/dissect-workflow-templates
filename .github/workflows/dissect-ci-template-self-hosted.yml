@@ -111,7 +111,7 @@ jobs:
 
   publish:
     needs: [lint, test]
-    if: ${{ contains(github.ref_name, 'main') || github.ref_name == 'master' || github.ref_type == 'tag' }}
+    if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
     runs-on: [self-hosted, ubuntu-latest]
     steps:
       - uses: actions/setup-python@v4
