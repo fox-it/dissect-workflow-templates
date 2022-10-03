@@ -114,7 +114,7 @@ jobs:
   publish:
     needs: [lint, test]
     if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-latest]
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -131,7 +131,10 @@ jobs:
             pip-cache-${{ runner.os }}-python-3.9-twine-
             pip-cache-${{ runner.os }}-python-
       - run: pip install "twine==4.0.0"
-      - env:
-          TWINE_USERNAME: ${{ secrets.DISSECT_PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.DISSECT_PYPI_PASSWORD }}
-        run: twine upload dist/*
+      - run: /tools/sign dist/*
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: dist/*.asc
+          retention-days: 1
+      - run: /tools/publish dist/*
