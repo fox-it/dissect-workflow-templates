@@ -93,7 +93,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -qq install build-essential tox
-        run: pip install tox
       - if: ${{ inputs.run_tests == true }}
         env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
