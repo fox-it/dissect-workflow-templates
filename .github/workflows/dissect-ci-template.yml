@@ -21,9 +21,6 @@ jobs:
           python-version: "3.9"
           cache: "pip"
           cache-dependency-path: "setup.py"
-      - run: |
-          sudo apt-get update
-          sudo apt-get -qq install build-essential
       - run: pip install tox
       - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
@@ -90,9 +87,7 @@ jobs:
           name: packages
           path: dist/
       - if: ${{ inputs.run_tests == true }}
-        run: |
-          sudo apt-get update
-          sudo apt-get -qq install build-essential tox
+        run: pip install tox
       - if: ${{ inputs.run_tests == true }}
         env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
