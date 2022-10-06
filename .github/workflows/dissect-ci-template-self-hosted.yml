@@ -133,3 +133,4 @@ jobs:
           TWINE_USERNAME: ${{ secrets.DISSECT_PRIVATE_PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.DISSECT_PRIVATE_PYPI_PASSWORD }}
         run: twine upload --repository-url ${{ secrets.DISSECT_PRIVATE_PYPI_REPOSITORY }} dist/*
+      - run: rm -rf dist/

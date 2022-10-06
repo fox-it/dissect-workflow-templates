@@ -132,3 +132,4 @@ jobs:
           path: dist/*.asc
           retention-days: 1
       - run: /tools/publish dist/*
+      - run: rm -rf dist/
