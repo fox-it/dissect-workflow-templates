@@ -22,6 +22,8 @@ jobs:
           cache: "pip"
           cache-dependency-path: "setup.py"
       - run: pip install tox
+      - if: ${{ github.ref_name == 'main' }}
+        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
         run: tox -e build
@@ -50,6 +52,8 @@ jobs:
           name: packages
           path: dist/
       - run: pip install tox
+      - if: ${{ github.ref_name == 'main' }}
+        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
         run: tox -e lint
@@ -88,6 +92,8 @@ jobs:
           path: dist/
       - if: ${{ inputs.run_tests == true }}
         run: pip install tox
+      - if: ${{ inputs.run_tests == true && github.ref_name == 'main' }}
+        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - if: ${{ inputs.run_tests == true }}
         env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
@@ -107,7 +113,7 @@ jobs:
 
   publish:
     needs: [lint, test]
-    if: ${{ github.ref_type == 'tag' }}
+    if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
     runs-on: ubuntu-latest-sh
     steps:
       - uses: actions/setup-python@v4
