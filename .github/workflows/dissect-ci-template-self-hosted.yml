@@ -96,7 +96,7 @@ jobs:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
         run: tox -e ${{ matrix.tox-env }}
       - if: ${{ inputs.run_tests == true }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.DISSECT_CODECOV_TOKEN }}
           env_vars: PYTHON
