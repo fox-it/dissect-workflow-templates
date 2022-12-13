@@ -26,7 +26,7 @@ jobs:
           cache: "pip"
           cache-dependency-path: "setup.py"
       - run: pip install tox
-      - if: ${{ github.ref_name == 'main' }}
+      - if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
         run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
@@ -56,7 +56,7 @@ jobs:
           name: packages
           path: dist/
       - run: pip install tox
-      - if: ${{ github.ref_name == 'main' }}
+      - if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
         run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
@@ -96,7 +96,7 @@ jobs:
           path: dist/
       - if: ${{ inputs.run_tests == true }}
         run: pip install tox
-      - if: ${{ inputs.run_tests == true && github.ref_name == 'main' }}
+      - if: ${{ inputs.run_tests == true && ( github.ref_name == 'main' || github.ref_type == 'tag' ) }}
         run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - if: ${{ inputs.run_tests == true }}
         env:
