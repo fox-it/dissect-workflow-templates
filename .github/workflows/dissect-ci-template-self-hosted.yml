@@ -6,6 +6,10 @@ on:
         required: false
         type: boolean
         default: true
+      run_linting:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build:
@@ -20,12 +24,12 @@ jobs:
         with:
           python-version: "3.9"
           cache: "pip"
-          cache-dependency-path: "setup.py"
-      - run: pip install tox
+          cache-dependency-path: "pyproject.toml"
+      - run: pip install "tox==4.2.4"
       - env:
           PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
-        run: tox -e build
+        run: tox run -e build
       - uses: actions/upload-artifact@v3
         with:
           name: packages
@@ -36,25 +40,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest-sh
     steps:
-      - uses: actions/checkout@v3
+      - if: ${{ inputs.run_linting == true }}
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
-      - run: git lfs pull
-      - uses: actions/setup-python@v4
+      - if: ${{ inputs.run_linting == true }}
+        run: git lfs pull
+      - if: ${{ inputs.run_linting == true }}
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
           cache: "pip"
-          cache-dependency-path: "setup.py"
-      - uses: actions/download-artifact@v3
-        with:
-          name: packages
-          path: dist/
-      - run: pip install tox
-      - env:
-          PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
+          cache-dependency-path: "pyproject.toml"
+      - if: ${{ inputs.run_linting == true }}
+        run: pip install "tox==4.2.4"
+      - if: ${{ inputs.run_linting == true && github.ref_name == 'main' }}
+        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
+      - if: ${{ inputs.run_linting == true }}
+        env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
-        run: tox -e lint
+        run: tox run -e lint
 
   test:
     needs: build
@@ -88,19 +94,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
-          cache-dependency-path: "setup.py"
+          cache-dependency-path: "pyproject.toml"
       - if: ${{ inputs.run_tests == true }}
-        uses: actions/download-artifact@v3
-        with:
-          name: packages
-          path: dist/
-      - if: ${{ inputs.run_tests == true }}
-        run: pip install tox
+        run: pip install "tox==4.2.4"
+      - if: ${{ inputs.run_tests == true && github.ref_name == 'main' }}
+        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - if: ${{ inputs.run_tests == true }}
         env:
           PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.python-include }}
-        run: tox -e ${{ matrix.tox-env }}
+        run: tox run -e ${{ matrix.tox-env }}
       - if: ${{ inputs.run_tests == true }}
         uses: codecov/codecov-action@v3
         with:
