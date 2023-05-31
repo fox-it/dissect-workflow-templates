@@ -149,12 +149,6 @@ jobs:
             pip-cache-${{ runner.os }}-python-3.9-twine-
             pip-cache-${{ runner.os }}-python-
       - run: pip install "twine==4.0.0"
-      - run: /tools/sign dist/*
-      - uses: actions/upload-artifact@v3
-        with:
-          name: packages
-          path: dist/*.asc
-          retention-days: 1
       - run: /tools/publish dist/*
 
   on-demand-test:
