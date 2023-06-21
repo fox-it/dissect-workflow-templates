@@ -137,24 +137,19 @@ jobs:
   publish:
     needs: [lint, test]
     if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
-    runs-on: ubuntu-latest-sh
+    runs-on: ubuntu-latest
+    environment: dissect_publish
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
       - uses: actions/download-artifact@v3
         with:
           name: packages
           path: dist/
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: pip-cache-${{ runner.os }}-python-3.9-twine-4.0.0
-          restore-keys: |
-            pip-cache-${{ runner.os }}-python-3.9-twine-
-            pip-cache-${{ runner.os }}-python-
-      - run: pip install "twine==4.0.0"
-      - run: /tools/publish dist/*
+      # According to the documentation, it automatically looks inside the `dist/` folder for packages.
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
 
   on-demand-test:
     needs: [publish]
