@@ -122,6 +122,7 @@ jobs:
     needs: [lint, test]
     if: ${{ github.ref_name == 'main' || github.ref_type == 'tag' }}
     runs-on: ubuntu-latest-sh
+    environment: dissect_publish
     steps:
       - uses: actions/download-artifact@v3
         with:
