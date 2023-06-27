@@ -1,0 +1,24 @@
+name: Dissect CI Template
+on:
+  workflow_call:
+    inputs:
+      on-demand-test:
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  on-demand-test:
+    if: ${{ inputs.on-demand-test != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          REPO_NAME: ${{ inputs.on-demand-test }}
+        run: |
+          curl \
+               --no-progress-meter \
+               -X POST \
+               -H "Accept: application/vnd.github+json" \
+               -H "Authorization: Bearer ${{ secrets.DISSECT_PA_TOKEN }}" \
+               "https://api.github.com/repos/fox-it/${REPO_NAME}/dispatches" \
+               -d '{"event_type":"on-demand-test"}'
