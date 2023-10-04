@@ -84,9 +84,6 @@ jobs:
           - python-version: "pypy3.9"
             python-include: "pypy3.9"
             tox-env: "pypy39"
-          - python-version: "pypy3.10"
-            python-include: "pypy3.10"
-            tox-env: "pypy310"
     steps:
       - if: ${{ inputs.run_tests == true }}
         uses: actions/checkout@v3
