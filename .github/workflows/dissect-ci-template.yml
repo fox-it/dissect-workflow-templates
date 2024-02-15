@@ -91,7 +91,6 @@ jobs:
             # commandlines from tox.ini files fails. This results in a failure when
             # using tox' envtmpdir in a pytest commandline.
             tox-version: "4.4.0"
-            allow_failure: true
     steps:
       - if: ${{ inputs.run_tests == true && inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
         run: sudo apt-get install -qq ${{ inputs.deb-packages }}
