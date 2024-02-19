@@ -84,10 +84,11 @@ jobs:
             include-prefix: "python"
           - python-version: "pypy3.9"
             include-prefix: ""
-          - python-version: "3.12"
-            allow_failure: true
           - python-version: "pypy3.10"
             include-prefix: ""
+            allow_failure: true
+          - python-version: "3.12"
+            allow_failure: true
           - os: "windows-latest"
             # There is a bug in tox < 4.4.0 (and Python 3.9) on Windows where parsing
             # commandlines from tox.ini files fails. This results in a failure when
