@@ -31,7 +31,7 @@ jobs:
           python-version: "3.9"
           cache: "pip"
           cache-dependency-path: "pyproject.toml"
-      - run: pip install "tox==4.2.4"
+      - run: pip install "tox==4.4.3"
       - if: ${{ github.ref_name == 'main' }}
         run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - env:
@@ -61,7 +61,7 @@ jobs:
           cache: "pip"
           cache-dependency-path: "pyproject.toml"
       - if: ${{ inputs.run_linting == true }}
-        run: pip install "tox==4.2.4"
+        run: pip install "tox==4.4.3"
       - if: ${{ inputs.run_linting == true && github.ref_name == 'main' }}
         run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
       - if: ${{ inputs.run_linting == true }}
@@ -80,7 +80,7 @@ jobs:
         python-version: ["3.9", "pypy3.9", "pypy3.10", "3.10", "3.11", "3.12"]
         include:
           - allow_failure: false
-            tox-version: "4.2.4"
+            tox-version: "4.4.3"
             include-prefix: "python"
           - python-version: "pypy3.9"
             include-prefix: ""
@@ -89,11 +89,6 @@ jobs:
             allow_failure: true
           - python-version: "3.12"
             allow_failure: true
-          - os: "windows-latest"
-            # There is a bug in tox < 4.4.0 (and Python 3.9) on Windows where parsing
-            # commandlines from tox.ini files fails. This results in a failure when
-            # using tox' envtmpdir in a pytest commandline.
-            tox-version: "4.4.0"
     steps:
       - if: ${{ inputs.run_tests == true && inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
         run: sudo apt-get install -qq ${{ inputs.deb-packages }}
