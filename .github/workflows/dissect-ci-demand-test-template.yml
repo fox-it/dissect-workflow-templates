@@ -17,6 +17,7 @@ jobs:
         run: |
           curl \
                --no-progress-meter \
+               --fail-with-body \
                -X POST \
                -H "Accept: application/vnd.github+json" \
                -H "Authorization: Bearer ${{ secrets.DISSECT_CI_DEMAND_TEST_PA_TOKEN }}" \
