@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          REPO_NAME: ${{ inputs.on-demand-test }}
+          REPO_NAME: "${{ inputs.on-demand-test }}"
         run: |
           curl \
                --no-progress-meter \
