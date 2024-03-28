@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # CACHING LFS OBJECTS
+      # Caching LFS objects
       - name: Create LFS file list
         run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
       - name: Cache LFS
@@ -27,7 +27,7 @@ jobs:
         with:
           path: .git/lfs
           key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - name: Git LFS pull
+      - name: Pull LFS
         run: git lfs pull
 
       - uses: actions/setup-python@v5
@@ -57,7 +57,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # CACHING LFS OBJECTS
+      # Caching LFS objects
       - if: ${{ inputs.run_linting == true }}
         name: Create LFS file list
         run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
@@ -68,7 +68,7 @@ jobs:
           path: .git/lfs
           key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - if: ${{ inputs.run_linting == true }}
-        name: Git LFS pull
+        name: Pull LFS
         run: git lfs pull
 
       - if: ${{ inputs.run_linting == true }}
@@ -114,7 +114,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # CACHING LFS OBJECTS
+      # Caching LFS objects
       - if: ${{ inputs.run_tests == true }}
         name: Create LFS file list
         run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
@@ -125,7 +125,7 @@ jobs:
           path: .git/lfs
           key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - if: ${{ inputs.run_tests == true }}
-        name: Git LFS pull
+        name: Pull LFS
         run: git lfs pull
 
       - if: ${{ inputs.run_tests == true }}
