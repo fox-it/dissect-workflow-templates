@@ -15,12 +15,12 @@ jobs:
   build:
     runs-on: ubuntu-latest-sh
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
       - run: git lfs pull
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.9"
           cache: "pip"
@@ -32,7 +32,7 @@ jobs:
           PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
         run: tox run -e build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: packages
           path: dist/*
@@ -43,14 +43,14 @@ jobs:
     runs-on: ubuntu-latest-sh
     steps:
       - if: ${{ inputs.run_linting == true }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
       - if: ${{ inputs.run_linting == true }}
         run: git lfs pull
       - if: ${{ inputs.run_linting == true }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.9"
           cache: "pip"
@@ -88,14 +88,14 @@ jobs:
       - if: ${{ inputs.run_tests == true && inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
         run: sudo apt-get install -qq ${{ inputs.deb-packages }}
       - if: ${{ inputs.run_tests == true }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
       - if: ${{ inputs.run_tests == true }}
         run: git lfs pull
       - if: ${{ inputs.run_tests == true }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -110,7 +110,7 @@ jobs:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.include-prefix }}${{ matrix.python-version }}
         run: tox run -e ${{ matrix.python-version }}
       - if: ${{ inputs.run_tests == true }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.DISSECT_CODECOV_TOKEN }}
           env_vars: PYTHON
@@ -118,7 +118,7 @@ jobs:
           flags: unittests
           verbose: true
       - if: ${{ inputs.run_tests == true }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage.xml
@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest-sh
     environment: dissect_publish
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: packages
           path: dist/
