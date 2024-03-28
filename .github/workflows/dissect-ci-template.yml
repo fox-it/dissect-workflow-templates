@@ -150,6 +150,7 @@ jobs:
       - if: ${{ inputs.run_tests == true }}
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.DISSECT_CODECOV_TOKEN }}
           env_vars: PYTHON
           files: coverage.xml
           flags: unittests
