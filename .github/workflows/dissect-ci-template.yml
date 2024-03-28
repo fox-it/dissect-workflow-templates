@@ -154,9 +154,3 @@ jobs:
           files: coverage.xml
           flags: unittests
           verbose: true
-      - if: ${{ inputs.run_tests == true }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage.xml
-          overwrite: true
