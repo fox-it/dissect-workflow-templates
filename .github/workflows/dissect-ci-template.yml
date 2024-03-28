@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - name: Git LFS pull
         run: git lfs pull
 
@@ -71,7 +71,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - if: ${{ inputs.run_linting == true }}
         name: Git LFS pull
         run: git lfs pull
@@ -128,7 +128,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - if: ${{ inputs.run_linting == true }}
         name: Git LFS pull
         run: git lfs pull
