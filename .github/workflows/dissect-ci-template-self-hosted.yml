@@ -94,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest-sh"]
-        python-version: ["3.9", "pypy3.9", "pypy3.10", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "pypy3.9", "pypy3.10", "3.10", "3.11", "3.12", "3.13"]
         include:
           - allow_failure: false
             tox-version: "4.2.4"
@@ -105,6 +105,8 @@ jobs:
             include-prefix: ""
             allow_failure: true
           - python-version: "3.12"
+            allow_failure: true
+          - python-version: "3.13"
             allow_failure: true
     steps:
       - if: ${{ inputs.run_tests == true && inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
