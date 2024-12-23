@@ -6,14 +6,18 @@ on:
         required: false
         type: boolean
         default: true
-      run-docs:
-        required: false
-        type: boolean
-        default: true
       run-linting:
         required: false
         type: boolean
         default: true
+      run-docs:
+        required: false
+        type: boolean
+        default: true
+      run-benchmarks:
+        required: false
+        type: boolean
+        default: false
       deb-packages:
         required: false
         type: string
@@ -102,6 +106,19 @@ jobs:
           files: coverage.xml
           flags: unittests
           verbose: true
+
+  benchmark:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-benchmarks == true}}
+    continue-on-error: true
+    steps:
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
+
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
+        with:
+          tox-environment: benchmark
+          python-version: "3.13"
 
   publish:
     needs: [lint, test]
