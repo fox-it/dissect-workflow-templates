@@ -1,0 +1,23 @@
+name: 'git pull and LFS Cache'
+description: 'Pull the repository and cache git lfs objects'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create LFS file list
+      shell: bash
+      run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
+
+    - name: Cache LFS
+      uses: actions/cache@v4
+      with:
+        path: .git/lfs
+        key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+
+    - name: Pull LFS
+      shell: bash
+      run: git lfs pull
+
