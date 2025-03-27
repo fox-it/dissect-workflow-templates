@@ -6,6 +6,10 @@ on:
         required: false
         type: boolean
         default: true
+      run_docs:
+        required: false
+        type: boolean
+        default: true
       run-linting:
         required: false
         type: boolean
@@ -42,6 +46,36 @@ jobs:
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: lint
+
+  docs-build:
+    needs: build
+    runs-on: ubuntu-latest-sh
+    if: ${{ inputs.run_docs == true}}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Create LFS file list
+        run: git lfs ls-files --long | cut -d ' ' 0f1 | sort > .lfs-assets-id
+      - name: Cache LFS
+        uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+      - name: Pull LFS
+        run: git lfs pull
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+          cache: "pip"
+          cache-dependency-path: "pyproject.toml"
+      - run: pip install "tox==4.4.3"
+      - env:
+          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
+        run: tox run -e docs-build 
+
 
   test:
     needs: build
