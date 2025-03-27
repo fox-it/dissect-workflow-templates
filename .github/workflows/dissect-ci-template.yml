@@ -60,38 +60,31 @@ jobs:
   lint:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ inputs.run_linting == true }}
     steps:
-      - if: ${{ inputs.run_linting == true }}
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       # Caching LFS objects
-      - if: ${{ inputs.run_linting == true }}
-        name: Create LFS file list
+      - name: Create LFS file list
         run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
-      - if: ${{ inputs.run_linting == true }}
-        name: Cache LFS
+      - name: Cache LFS
         uses: actions/cache@v4
         with:
           path: .git/lfs
           key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - if: ${{ inputs.run_linting == true }}
-        name: Pull LFS
+      - name: Pull LFS
         run: git lfs pull
 
-      - if: ${{ inputs.run_linting == true }}
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.9"
           cache: "pip"
           cache-dependency-path: "pyproject.toml"
-      - if: ${{ inputs.run_linting == true }}
-        run: pip install "tox==4.4.3"
-      - if: ${{ inputs.run_linting == true && github.ref_name == 'main' }}
-        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
-      - if: ${{ inputs.run_linting == true }}
-        env:
+      - run: pip install "tox==4.4.3"
+      - run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
+      - env:
           C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
         run: tox run -e lint
 
