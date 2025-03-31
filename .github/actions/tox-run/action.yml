@@ -1,0 +1,51 @@
+
+name: 'tox-run'
+description: 'All the steps required to run a tox action'
+inputs:
+
+  tox-environment:
+    description: "The tox run to execute"
+    required: true
+
+  cache-dependency-path:
+    description: "Cache path to pass to setup-python"
+    required: false
+    default: "pyproject.toml"
+  include-prefix:
+    description: The prefix for the c include path.
+    required: false
+    default: "python"
+  python-version:
+    description: "Python version that gets installed"
+    required: false
+    default: "3.9"
+  runner-os:
+    description: "The os the runner runs on"
+    default: "ubuntu-latest"
+    required: false
+  tox-version:
+    description: "Version of tox to install"
+    required: false
+    default: "4.4.3"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "${{ inputs.python-version }}"
+        cache: "pip"
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - shell: bash
+      run: pip install "tox==${{ inputs.tox-version }}"
+
+    - if: ${{ inputs.cache-dependency-path == 'pyproject.toml' && github.ref_name == 'main'  && ! startsWith(inputs.runner-os, 'windows') }}
+      shell: bash
+      run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
+
+    - env:
+        C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ inputs.include-prefix }}${{ inputs.python-version }}
+      shell: bash
+      run: tox run -e ${{ inputs.tox-environment }}
+
