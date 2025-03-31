@@ -69,8 +69,6 @@ jobs:
         run: git lfs pull
 
       - uses: fox-it/dissect-workflow-templates/.github/actions/docs-build@add-step-to-check-docs
-        with:
-          cache-dependency-path: "pyproject.toml"
 
   test:
     needs: build
