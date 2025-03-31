@@ -6,7 +6,10 @@ jobs:
   docs-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-action@add-step-to-check-docs
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'true'
 
       - uses: fox-it/dissect-workflow-templates/.github/actions/docs-build@add-step-to-check-docs
         with:
