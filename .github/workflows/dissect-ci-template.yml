@@ -52,23 +52,13 @@ jobs:
   docs-build:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ inputs.run_docs == true}}
+    if: ${{ inputs.run-docs == true}}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Create LFS file list
-        run: git lfs ls-files --long | cut -d ' ' 0f1 | sort > .lfs-assets-id
-      - name: Cache LFS
-        uses: actions/cache@v4
-        with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - name: Pull LFS
-        run: git lfs pull
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/docs-build@add-step-to-check-docs
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+        with:
+          tox-environment: docs-build
 
   test:
     needs: build
