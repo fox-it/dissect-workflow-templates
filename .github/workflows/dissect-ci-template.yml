@@ -10,7 +10,7 @@ on:
         required: false
         type: boolean
         default: true
-      run_docs:
+      run-docs:
         required: false
         type: boolean
         default: true
