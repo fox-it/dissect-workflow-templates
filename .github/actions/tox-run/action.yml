@@ -1,35 +1,32 @@
-
-name: 'tox-run'
-description: 'All the steps required to run a tox action'
+name: tox-run
+description: All the steps required to run a tox action
 inputs:
-
   tox-environment:
-    description: "The tox run to execute"
+    description: The tox environment to run
     required: true
-
   cache-dependency-path:
-    description: "Cache path to pass to setup-python"
+    description: Cache path to pass to setup-python
     required: false
-    default: "pyproject.toml"
+    default: pyproject.toml
   include-prefix:
-    description: The prefix for the c include path.
+    description: The prefix for the C include path
     required: false
-    default: "python"
+    default: python
   python-version:
-    description: "Python version that gets installed"
+    description: Python version that gets installed
     required: false
-    default: "3.9"
+    default: 3.9
   runner-os:
-    description: "The os the runner runs on"
-    default: "ubuntu-latest"
+    description: The OS the runner runs on
+    default: ubuntu-latest
     required: false
   tox-version:
-    description: "Version of tox to install"
+    description: Version of tox to install
     required: false
-    default: "4.4.3"
+    default: 4.4.3
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - uses: actions/setup-python@v5
       with:
@@ -40,6 +37,8 @@ runs:
     - shell: bash
       run: pip install "tox==${{ inputs.tox-version }}"
 
+      # This step removes the short hash and the build date from the resulting package name generated with tox
+      # This should only occur when it gets actually pushed
     - if: ${{ inputs.cache-dependency-path == 'pyproject.toml' && github.ref_name == 'main'  && ! startsWith(inputs.runner-os, 'windows') }}
       shell: bash
       run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml

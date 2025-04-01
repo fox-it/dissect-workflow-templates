@@ -1,7 +1,7 @@
-name: 'git pull and LFS Cache'
-description: 'Pull the repository and cache git lfs objects'
+name: git pull and LFS Cache
+description: Pull the repository and cache git lfs objects
 runs:
-  using: "composite"
+  using: composite
   steps:
     - uses: actions/checkout@v4
       with:
