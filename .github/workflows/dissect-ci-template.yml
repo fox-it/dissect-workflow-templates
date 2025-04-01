@@ -10,10 +10,6 @@ on:
         required: false
         type: boolean
         default: true
-      run-docs:
-        required: false
-        type: boolean
-        default: true
       deb-packages:
         required: false
         type: string
@@ -49,17 +45,6 @@ jobs:
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
         with:
           tox-environment: lint
-
-  docs-build:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ inputs.run-docs == true}}
-    steps:
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
-
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
-        with:
-          tox-environment: docs-build
 
   test:
     needs: build
