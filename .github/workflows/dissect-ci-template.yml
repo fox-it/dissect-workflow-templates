@@ -86,10 +86,10 @@ jobs:
 
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
         with:
-          tox-environment: "${{ matrix.python-version }}"
-          runner-os: "${{ matrix.os }}"
-          python-version: "${{ matrix.python-version }}"
-          include-prefix: "${{ matrix.include-prefix }}"
+          tox-environment: ${{ matrix.python-version }}
+          runner-os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          include-prefix: ${{ matrix.include-prefix }}
 
       - uses: codecov/codecov-action@v4
         with:
