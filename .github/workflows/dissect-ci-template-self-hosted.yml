@@ -6,6 +6,10 @@ on:
         required: false
         type: boolean
         default: true
+      run-docs:
+        required: false
+        type: boolean
+        default: true
       run-linting:
         required: false
         type: boolean
@@ -42,6 +46,18 @@ jobs:
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: lint
+
+  docs-build:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-docs == true}}
+    continue-on-error: true
+    steps:
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
+
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
+        with:
+          tox-environment: docs-build
 
   test:
     needs: build
