@@ -21,6 +21,7 @@ jobs:
     steps:
       #TODO: Before merge, change to @main
       - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
         with:
           tox-environment: build
@@ -73,6 +74,7 @@ jobs:
 
       #TODO: Before merge, change to @main
       - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
         with:
           tox-environment: "${{ matrix.python-version }}"
