@@ -53,6 +53,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: ${{ inputs.run-docs == true}}
+    continue-on-error: true
     steps:
       - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
