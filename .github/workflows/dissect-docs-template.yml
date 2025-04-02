@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: 'true'
+          submodules: true
 
       - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
-          tox-environment: "docs-build"
-          cache-dependency-path: "requirements.txt"
+          tox-environment: docs-build
+          cache-dependency-path: requirements.txt
 
