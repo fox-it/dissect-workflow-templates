@@ -2,11 +2,11 @@ name: Dissect Self Hosted CI Template
 on:
   workflow_call:
     inputs:
-      run_tests:
+      run-tests:
         required: false
         type: boolean
         default: true
-      run_linting:
+      run-linting:
         required: false
         type: boolean
         default: true
@@ -35,7 +35,7 @@ jobs:
   lint:
     needs: build
     runs-on: ubuntu-latest-sh
-    if: ${{ inputs.run_linting == true }}
+    if: ${{ inputs.run-linting == true }}
 
     steps:
       #TODO: Before merge, change to @main
@@ -48,7 +48,7 @@ jobs:
   test:
     needs: build
     runs-on: ${{ matrix.os }}
-    if: ${{ inputs.run_tests == true }}
+    if: ${{ inputs.run-tests == true }}
     continue-on-error: ${{ matrix.allow_failure }}
     strategy:
       fail-fast: false
