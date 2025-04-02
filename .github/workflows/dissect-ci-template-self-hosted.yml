@@ -2,46 +2,29 @@ name: Dissect Self Hosted CI Template
 on:
   workflow_call:
     inputs:
-      run_tests:
+      run-tests:
         required: false
         type: boolean
         default: true
-      run_linting:
+      run-linting:
         required: false
         type: boolean
         default: true
+      deb-packages:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   build:
     runs-on: ubuntu-latest-sh
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      # Caching LFS objects
-      - name: Create LFS file list
-        run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
-      - name: Cache LFS
-        uses: actions/cache@v4
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - name: Pull LFS
-        run: git lfs pull
+          tox-environment: build
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-      - run: pip install "tox==4.2.4"
-      - if: ${{ github.ref_name == 'main' }}
-        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
-      - env:
-          PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
-          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
-        run: tox run -e build
       - uses: actions/upload-artifact@v4
         with:
           name: packages
@@ -51,44 +34,19 @@ jobs:
   lint:
     needs: build
     runs-on: ubuntu-latest-sh
+    if: ${{ inputs.run-linting == true }}
+
     steps:
-      - if: ${{ inputs.run_linting == true }}
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      # Caching LFS objects
-      - if: ${{ inputs.run_linting == true }}
-        name: Create LFS file list
-        run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
-      - if: ${{ inputs.run_linting == true }}
-        name: Cache LFS
-        uses: actions/cache@v4
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - if: ${{ inputs.run_linting == true }}
-        name: Pull LFS
-        run: git lfs pull
-
-      - if: ${{ inputs.run_linting == true }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-      - if: ${{ inputs.run_linting == true }}
-        run: pip install "tox==4.2.4"
-      - if: ${{ inputs.run_linting == true && github.ref_name == 'main' }}
-        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
-      - if: ${{ inputs.run_linting == true }}
-        env:
-          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/python3.9
-        run: tox run -e lint
+          tox-environment: lint
 
   test:
     needs: build
     runs-on: ${{ matrix.os }}
+    if: ${{ inputs.run-tests == true }}
     continue-on-error: ${{ matrix.allow_failure }}
     strategy:
       fail-fast: false
@@ -109,44 +67,19 @@ jobs:
           - python-version: "3.13"
             allow_failure: true
     steps:
-      - if: ${{ inputs.run_tests == true && inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
+      - if: ${{ inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
         run: sudo apt-get install -qq ${{ inputs.deb-packages }}
-      - if: ${{ inputs.run_tests == true }}
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # Caching LFS objects
-      - if: ${{ inputs.run_tests == true }}
-        name: Create LFS file list
-        run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
-      - if: ${{ inputs.run_tests == true }}
-        name: Cache LFS
-        uses: actions/cache@v4
-        with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - if: ${{ inputs.run_tests == true }}
-        name: Pull LFS
-        run: git lfs pull
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - if: ${{ inputs.run_tests == true }}
-        uses: actions/setup-python@v5
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
+          tox-environment: ${{ matrix.python-version }}
+          runner-os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
-      - if: ${{ inputs.run_tests == true }}
-        run: pip install "tox==${{ matrix.tox-version }}"
-      - if: ${{ inputs.run_tests == true && github.ref_name == 'main'  && ! startsWith(matrix.os, 'windows') }}
-        run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
-      - if: ${{ inputs.run_tests == true }}
-        env:
-          PIP_INDEX_URL: ${{ secrets.DISSECT_PIP_INDEX_URL }}
-          C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ matrix.include-prefix }}${{ matrix.python-version }}
-        run: tox run -e ${{ matrix.python-version }}
-      - if: ${{ inputs.run_tests == true }}
-        uses: codecov/codecov-action@v4
+          include-prefix: ${{ matrix.include-prefix }}
+
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.DISSECT_CODECOV_TOKEN }}
           env_vars: PYTHON
