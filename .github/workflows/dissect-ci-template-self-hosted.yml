@@ -19,10 +19,9 @@ jobs:
   build:
     runs-on: ubuntu-latest-sh
     steps:
-      #TODO: Before merge, change to @main
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: build
 
@@ -38,10 +37,9 @@ jobs:
     if: ${{ inputs.run-linting == true }}
 
     steps:
-      #TODO: Before merge, change to @main
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: lint
 
@@ -72,10 +70,9 @@ jobs:
       - if: ${{ inputs.deb-packages != '' && ! startsWith(matrix.os, 'windows') }}
         run: sudo apt-get install -qq ${{ inputs.deb-packages }}
 
-      #TODO: Before merge, change to @main
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: ${{ matrix.python-version }}
           runner-os: ${{ matrix.os }}
