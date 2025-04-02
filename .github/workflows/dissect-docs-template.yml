@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
           submodules: 'true'
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: "docs-build"
           cache-dependency-path: "requirements.txt"

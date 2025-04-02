@@ -52,9 +52,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.run-docs == true}}
     steps:
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@cleanup
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
         with:
           tox-environment: docs-build
 
