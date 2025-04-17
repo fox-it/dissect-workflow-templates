@@ -14,6 +14,10 @@ on:
         required: false
         type: boolean
         default: true
+      run-benchmarks:
+        required: false
+        type: boolean
+        default: false
       deb-packages:
         required: false
         type: string
@@ -111,3 +115,23 @@ jobs:
           files: coverage.xml
           flags: unittests
           verbose: true
+
+  benchmark:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-benchmarks == true}}
+    continue-on-error: true
+    steps:
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+          cache-dependency-path: "pyproject.toml"
+
+      - run: pip install "tox==4.4.3"
+
+      - uses: CodSpeedHQ/action@v3
+        with:
+          run: tox run -e benchmark
