@@ -115,10 +115,17 @@ jobs:
     steps:
       - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
+      - uses: actions/setup-python@v5
         with:
-          tox-environment: benchmark
           python-version: "3.13"
+          cache: "pip"
+          cache-dependency-path: "pyproject.toml"
+
+      - run: pip install "tox==4.4.3"
+
+      - uses: CodSpeedHQ/action@v3
+        with:
+          run: tox run -e benchmark
 
   publish:
     needs: [lint, test]
