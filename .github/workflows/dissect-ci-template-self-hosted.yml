@@ -2,11 +2,11 @@ name: Dissect Self Hosted CI Template
 on:
   workflow_call:
     inputs:
-      run-tests:
+      run-linting:
         required: false
         type: boolean
         default: true
-      run-linting:
+      run-tests:
         required: false
         type: boolean
         default: true
@@ -51,18 +51,6 @@ jobs:
         with:
           tox-environment: lint
 
-  docs-build:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ inputs.run-docs == true}}
-    continue-on-error: true
-    steps:
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
-
-      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
-        with:
-          tox-environment: docs-build
-
   test:
     needs: build
     runs-on: ${{ matrix.os }}
@@ -106,6 +94,18 @@ jobs:
           files: coverage.xml
           flags: unittests
           verbose: true
+
+  docs-build:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-docs == true}}
+    continue-on-error: true
+    steps:
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
+
+      - uses: fox-it/dissect-workflow-templates/.github/actions/tox-run@main
+        with:
+          tox-environment: docs-build
 
   benchmark:
     needs: build
