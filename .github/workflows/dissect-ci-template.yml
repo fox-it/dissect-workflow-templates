@@ -224,7 +224,7 @@ jobs:
 
       - id: cibuildwheel-cache
         shell: bash
-        run: python -c "from platformdirs import user_cache_path; print('dir', user_cache_path(appname='cibuildwheel', appauthor='pypa'), sep='=')" > $GITHUB_OUTPUT
+        run: python -c "from platformdirs import user_cache_path; print('dir', user_cache_path(appname='cibuildwheel', appauthor='pypa'), sep='=')" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         with:
@@ -240,7 +240,7 @@ jobs:
             curl -sSf https://sh.rustup.rs | sh -s -- -y
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
           # Add i686 target for Windows only when building for x86
-          CIBW_BEFORE_ALL_WINDOWS: ${{ matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc' || '' }}
+          CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
           # Use build as frontend instead of pip
           CIBW_BUILD_FRONTEND: build
           # Configure for Rust builds and set the limited API to CPython 3.9
