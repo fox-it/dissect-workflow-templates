@@ -7,6 +7,10 @@ runs:
       with:
         fetch-depth: 0
 
+    - name: Set up LFS
+      shell: bash
+      run: git lfs install --local
+
     - name: Create LFS file list
       shell: bash
       run: git lfs ls-files --long | cut -d ' ' -f1 | sort > .lfs-assets-id
@@ -20,4 +24,3 @@ runs:
     - name: Pull LFS
       shell: bash
       run: git lfs pull
-
