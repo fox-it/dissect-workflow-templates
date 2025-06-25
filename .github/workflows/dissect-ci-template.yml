@@ -238,6 +238,7 @@ jobs:
           # Rust needs to be installed in every Linux container and git-lfs is required for setuptools_scm to work properly
           CIBW_BEFORE_ALL_LINUX: |
             curl -sSf https://sh.rustup.rs | sh -s -- -y
+            yum makecache || apt-get update || apk update || true
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
