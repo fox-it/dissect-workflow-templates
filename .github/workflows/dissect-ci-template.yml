@@ -171,7 +171,7 @@ jobs:
           - os: macos-14
             arch: arm64
     steps:
-      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@build-native
+      - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
 
       - name: Setup QEMU (Linux)
         if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.arch != 'x86_64'
