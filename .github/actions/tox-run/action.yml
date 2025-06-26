@@ -39,12 +39,11 @@ runs:
 
       # This step removes the short hash and the build date from the resulting package name generated with tox
       # This should only occur when it gets actually pushed
-    - if: ${{ inputs.cache-dependency-path == 'pyproject.toml' && github.ref_name == 'main'  && ! startsWith(inputs.runner-os, 'windows') }}
+    - if: ${{ inputs.cache-dependency-path == 'pyproject.toml' && github.ref_name == 'main' }}
       shell: bash
-      run: sed -i 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml
+      run: sed -i.bak 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml && rm -f pyproject.toml.bak
 
     - env:
         C_INCLUDE_PATH: ${{ env.pythonLocation }}/include/${{ inputs.include-prefix }}${{ inputs.python-version }}
       shell: bash
       run: tox run -e ${{ inputs.tox-environment }}
-
