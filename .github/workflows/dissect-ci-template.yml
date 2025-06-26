@@ -220,7 +220,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cargo-
 
       - name: Install cibuildwheel
-        run: python -m pip install platformdirs cibuildwheel==2.23.2
+        run: python -m pip install platformdirs cibuildwheel==3.0.0
 
       - id: cibuildwheel-cache
         shell: bash
@@ -251,8 +251,6 @@ jobs:
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
-          # Use build as frontend instead of pip
-          CIBW_BUILD_FRONTEND: build
           # Configure for Rust builds and set the limited API to CPython 3.9
           CIBW_CONFIG_SETTINGS: --build-rust --build-option=--py-limited-api=cp39
           # Enable PyPy builds
