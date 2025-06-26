@@ -254,7 +254,7 @@ jobs:
           # Configure for Rust builds and set the limited API to CPython 3.9
           CIBW_CONFIG_SETTINGS: --build-rust --build-option=--py-limited-api=cp39
           # Enable PyPy builds
-          CIBW_ENABLE: pypy
+          CIBW_ENABLE: pypy pypy-eol
           # Specific environment variables for each OS
           CIBW_ENVIRONMENT_LINUX: PATH="$HOME/.cargo/bin:$PATH"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.12
