@@ -233,6 +233,7 @@ jobs:
 
         # This step removes the short hash and the build date from the resulting package name generated with tox
         # This should only occur when it gets actually pushed
+        # We can't re-use the tox-run action here because we run tox from within cibuildwheel
       - if: ${{ github.ref_name == 'main' }}
         shell: bash
         run: sed -i.bak 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml && rm -f pyproject.toml.bak
