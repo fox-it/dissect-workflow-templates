@@ -23,7 +23,7 @@ inputs:
   tox-version:
     description: Version of tox to install
     required: false
-    default: "4.4.3"
+    default: "4.27.0"
 
 runs:
   using: composite
