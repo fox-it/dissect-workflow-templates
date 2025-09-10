@@ -63,7 +63,7 @@ jobs:
         python-version: ["pypy3.10", "3.10", "3.11", "3.12", "3.13"]
         include:
           - allow_failure: false
-            tox-version: "4.2.4"
+            tox-version: "4.4.3"
             include-prefix: "python"
           - python-version: "pypy3.10"
             include-prefix: ""
