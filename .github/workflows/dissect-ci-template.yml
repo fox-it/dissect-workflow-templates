@@ -66,17 +66,11 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        python-version: ["3.9", "pypy3.9", "pypy3.10", "pypy3.11", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["pypy3.10", "pypy3.11", "3.10", "3.11", "3.12", "3.13"]
         include:
           - allow_failure: false
             tox-version: "4.4.3"
             include-prefix: "python"
-          - python-version: "pypy3.9"
-            include-prefix: ""
-          - python-version: "pypy3.9"
-            os: "windows-latest"
-            include-prefix: ""
-            allow_failure: true
           - python-version: "pypy3.10"
             include-prefix: ""
             allow_failure: true
@@ -252,7 +246,7 @@ jobs:
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
           # Configure for Rust builds and set the limited API to CPython 3.9
-          CIBW_CONFIG_SETTINGS: --build-rust --build-option=--py-limited-api=cp39
+          CIBW_CONFIG_SETTINGS: --build-rust --build-option=--py-limited-api=cp310
           # Enable PyPy builds
           CIBW_ENABLE: pypy pypy-eol
           # Specific environment variables for each OS
