@@ -150,6 +150,8 @@ jobs:
             arch: ppc64le
           - os: ubuntu-latest
             arch: s390x
+          - os: ubuntu-latest
+            arch: riscv64
           - os: ubuntu-24.04-arm
             arch: aarch64
           - os: ubuntu-24.04-arm
@@ -171,7 +173,7 @@ jobs:
         if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.arch != 'x86_64'
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: ${{ matrix.arch == 'ppc64le' && 'linux/ppc64le' || matrix.arch == 's390x' && 'linux/s390x' || '' }}
+          platforms: linux/${{ matrix.arch }}
 
       - name: Setup Rust
         if: ${{ matrix.os != 'windows-11-arm' }}
@@ -214,7 +216,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cargo-
 
       - name: Install cibuildwheel
-        run: python -m pip install platformdirs cibuildwheel==3.0.0
+        run: python -m pip install platformdirs cibuildwheel==3.1.4
 
       - id: cibuildwheel-cache
         shell: bash
