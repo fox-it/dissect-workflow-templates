@@ -15,7 +15,7 @@ inputs:
   python-version:
     description: Python version that gets installed
     required: false
-    default: "3.9"
+    default: "3.10"
   runner-os:
     description: The OS the runner runs on
     default: ubuntu-latest
@@ -23,12 +23,12 @@ inputs:
   tox-version:
     description: Version of tox to install
     required: false
-    default: "4.4.3"
+    default: "4.27.0"
 
 runs:
   using: composite
   steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
         cache: pip
