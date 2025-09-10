@@ -245,7 +245,7 @@ jobs:
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
-          # Configure for Rust builds and set the limited API to CPython 3.9
+          # Configure for Rust builds and set the limited API to CPython 3.10
           CIBW_CONFIG_SETTINGS: --build-rust --build-option=--py-limited-api=cp310
           # Enable PyPy builds
           CIBW_ENABLE: pypy pypy-eol
