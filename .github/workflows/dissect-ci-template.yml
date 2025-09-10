@@ -234,7 +234,7 @@ jobs:
         shell: bash
         run: sed -i.bak 's/\[tool.setuptools_scm\]/\[tool.setuptools_scm\]\nlocal_scheme = "no-local-version"/' pyproject.toml && rm -f pyproject.toml.bak
 
-      - name: Build wheels
+      - name: Build abi3 wheels
         run: python -m cibuildwheel --output-dir dist
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
@@ -255,7 +255,35 @@ jobs:
           CIBW_ENVIRONMENT_LINUX: PATH="$HOME/.cargo/bin:$PATH"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.12
           # There are no Rust releases for these architectures
-          CIBW_SKIP: '*-musllinux_i686 *-musllinux_ppc64le *-musllinux_s390x *-musllinux_armv7l cp3??t-*'
+          CIBW_SKIP: 'cp3??t-* *-musllinux_i686 *-musllinux_ppc64le *-musllinux_s390x *-musllinux_armv7l *-musllinux_riscv64'
+          # Run tests
+          CIBW_TEST_REQUIRES: tox
+          CIBW_TEST_COMMAND: tox -e native -c {package}/tox.ini --installpkg {wheel}
+
+      - name: Build free-threaded wheels
+        run: python -m cibuildwheel --output-dir dist
+        env:
+          CIBW_ARCHS: ${{ matrix.arch }}
+          # Rust needs to be installed in every Linux container and git-lfs is required for setuptools_scm to work properly
+          CIBW_BEFORE_ALL_LINUX: |
+            curl -sSf https://sh.rustup.rs | sh -s -- -y
+            # Install git-lfs
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash || curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash || true
+            yum makecache || apt-get update || apk update || true
+            yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
+          # Add i686 target for Windows only when building for x86
+          CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
+          # Configure for Rust builds
+          CIBW_CONFIG_SETTINGS: --build-rust
+          # Only build free-threaded wheels
+          CIBW_BUILD: cp3??t-*
+          # Enable PyPy builds
+          CIBW_ENABLE: pypy pypy-eol
+          # Specific environment variables for each OS
+          CIBW_ENVIRONMENT_LINUX: PATH="$HOME/.cargo/bin:$PATH"
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.12
+          # There are no Rust releases for these architectures
+          CIBW_SKIP: '*-musllinux_i686 *-musllinux_ppc64le *-musllinux_s390x *-musllinux_armv7l *-musllinux_riscv64'
           # Run tests
           CIBW_TEST_REQUIRES: tox
           CIBW_TEST_COMMAND: tox -e native -c {package}/tox.ini --installpkg {wheel}
