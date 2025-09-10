@@ -255,7 +255,7 @@ jobs:
           CIBW_ENVIRONMENT_LINUX: PATH="$HOME/.cargo/bin:$PATH"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.12
           # There are no Rust releases for these architectures
-          CIBW_SKIP: '*-musllinux_i686 *-musllinux_ppc64le *-musllinux_s390x *-musllinux_armv7l'
+          CIBW_SKIP: '*-musllinux_i686 *-musllinux_ppc64le *-musllinux_s390x *-musllinux_armv7l cp3??t-*'
           # Run tests
           CIBW_TEST_REQUIRES: tox
           CIBW_TEST_COMMAND: tox -e native -c {package}/tox.ini --installpkg {wheel}
