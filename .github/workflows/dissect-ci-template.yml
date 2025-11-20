@@ -297,6 +297,7 @@ jobs:
         run: pip install abi3audit && abi3audit --strict --report dist/*-abi3-*.whl
 
       - name: Fail on fallback version
+        shell: bash
         run: |
           if find dist -maxdepth 1 -name '*-0.1*.whl' | grep .; then
             echo "Found a 0.1 fallback version wheel, failing the build"
