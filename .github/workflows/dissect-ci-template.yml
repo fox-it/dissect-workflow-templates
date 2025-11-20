@@ -152,8 +152,9 @@ jobs:
             arch: ppc64le
           - os: ubuntu-latest
             arch: s390x
-          - os: ubuntu-latest
-            arch: riscv64
+          # There are currently issues installing git-lfs on riscv64
+          # - os: ubuntu-latest
+          #   arch: riscv64
           - os: ubuntu-24.04-arm
             arch: aarch64
           - os: ubuntu-24.04-arm
@@ -247,6 +248,7 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash || curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash || true
             yum makecache || apt-get update || apk update || true
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
+            git-lfs --version
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
           # Configure for Rust builds and set the limited API to CPython 3.10
@@ -273,6 +275,7 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash || curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash || true
             yum makecache || apt-get update || apk update || true
             yum install -y git-lfs || apt-get install -y git-lfs || apk add git-lfs || true
+            git-lfs --version
           # Add i686 target for Windows only when building for x86
           CIBW_BEFORE_ALL_WINDOWS: ${{ (matrix.arch == 'x86' && 'rustup target add i686-pc-windows-msvc') || '' }}
           # Configure for Rust builds
@@ -292,6 +295,13 @@ jobs:
 
       - name: Run abi3audit
         run: pip install abi3audit && abi3audit --strict --report dist/*-abi3-*.whl
+
+      - name: Fail on fallback version
+        run: |
+          if find dist -maxdepth 1 -name '*-0.1*.whl' | grep .; then
+            echo "Found a 0.1 fallback version wheel, failing the build"
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
