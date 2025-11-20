@@ -296,22 +296,13 @@ jobs:
       - name: Run abi3audit
         run: pip install abi3audit && abi3audit --strict --report dist/*-abi3-*.whl
 
-      - name: Fail if any wheel has version 0.1 (non-Windows)
-        if: runner.os != 'Windows'
+      - name: Fail on fallback version
+        shell: bash
         run: |
           if find dist -maxdepth 1 -name '*-0.1*.whl' | grep .; then
             echo "Found a 0.1 fallback version wheel, failing the build"
             exit 1
           fi
-
-      - name: Fail if any wheel has version 0.1 (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          if (Get-ChildItem dist -Filter *-0.1*.whl) {
-            Write-Host "Found a 0.1 fallback version wheel, failing the build"
-            exit 1
-          }
 
       - uses: actions/upload-artifact@v4
         with:
