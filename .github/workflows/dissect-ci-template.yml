@@ -165,9 +165,9 @@ jobs:
             arch: x86
           - os: windows-11-arm
             arch: ARM64
-          - os: macos-13
+          - os: macos-15-intel
             arch: x86_64
-          - os: macos-14
+          - os: macos-latest
             arch: arm64
     steps:
       - uses: fox-it/dissect-workflow-templates/.github/actions/git-checkout@main
@@ -219,7 +219,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cargo-
 
       - name: Install cibuildwheel
-        run: python -m pip install platformdirs cibuildwheel==3.2.0
+        run: python -m pip install platformdirs cibuildwheel==3.3.0
 
       - id: cibuildwheel-cache
         shell: bash
