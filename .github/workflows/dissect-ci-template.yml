@@ -178,15 +178,15 @@ jobs:
         with:
           platforms: linux/${{ matrix.arch }}
 
-      - name: Setup Rust
-        if: ${{ matrix.os != 'windows-11-arm' }}
+      - name: Setup Rust (Linux/macOS)
+        if: ${{ runner.os != 'Windows' }}
         run: curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
 
-      - name: Setup Rust (Windows 11 ARM)
-        if: ${{ matrix.os == 'windows-11-arm' }}
+      - name: Setup Rust (Windows)
+        if: ${{ runner.os == 'Windows' }}
         run: |
-          Invoke-WebRequest -Uri "https://win.rustup.rs/aarch64" -OutFile "$env:TEMP\rustup-init.exe"
-           & "$env:TEMP\rustup-init.exe" -y
+          Invoke-WebRequest -Uri "https://win.rustup.rs/${{ runner.arch == 'ARM64' && 'aarch64' || 'x86_64' }}" -OutFile "$env:TEMP\rustup-init.exe"
+          & "$env:TEMP\rustup-init.exe" -y --default-toolchain stable
           "$env:USERPROFILE\.cargo\bin" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
           "CARGO_HOME=$env:USERPROFILE\.cargo" | Out-File -Append -Encoding ascii $env:GITHUB_ENV
         shell: pwsh
