@@ -132,7 +132,7 @@ jobs:
 
       - run: pip install "tox==4.27.0"
 
-      - uses: CodSpeedHQ/action@v3
+      - uses: CodSpeedHQ/action@v5
         with:
           run: tox run -e benchmark
 
