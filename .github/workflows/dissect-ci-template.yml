@@ -134,6 +134,7 @@ jobs:
 
       - uses: CodSpeedHQ/action@v5
         with:
+          mode: walltime
           run: tox run -e benchmark
 
   build-native:
