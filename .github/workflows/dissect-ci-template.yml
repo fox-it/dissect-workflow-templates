@@ -22,6 +22,10 @@ on:
         required: false
         type: boolean
         default: false
+      benchmark-mode:
+        required: false
+        type: string
+        default: "walltime"
       deb-packages:
         required: false
         type: string
@@ -134,7 +138,7 @@ jobs:
 
       - uses: CodSpeedHQ/action@v5
         with:
-          mode: walltime
+          mode: ${{ inputs.benchmark-mode }}
           run: tox run -e benchmark
 
   build-native:
