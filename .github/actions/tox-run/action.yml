@@ -28,10 +28,12 @@ inputs:
 runs:
   using: composite
   steps:
+    # The pip cache of Windows PyPy keeps getting corrupted, which makes the installation of tox fail with an
+    # IncompleteRead error, so don't use it there. An empty value disables the cache.
     - uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
-        cache: pip
+        cache: ${{ !(inputs.runner-os == 'windows-latest' && startsWith(inputs.python-version, 'pypy')) && 'pip' || '' }}
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
 
     - shell: bash
